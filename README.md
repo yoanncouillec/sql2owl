@@ -17,13 +17,10 @@ Quickstart
 
 Options
 -------
-`-i` input file
-
-`-o` output file
-
-`-p` path of the data (example : http://mydata.com)
-
-`-b` alias of the path (example : base)
+- `-i` input file
+- `-o` output file
+- `-p` path of the data (example : http://mydata.com)
+- `-b` alias of the path (example : base)
 
 
 Requirement
