@@ -7,9 +7,8 @@ Transform database model to semantic web model
 
 Download
 --------
-1. Go to the "Code" tab.
-2. Click on the "Download" button (on the right).
-3. Choose the download format (zip or tar.gz).
+Choose [Zip format](https://github.com/yoanncouillec/sql2owl/zipball/master)
+or [Tar format](https://github.com/yoanncouillec/sql2owl/tarball/master)
 
 Quickstart
 ----------
