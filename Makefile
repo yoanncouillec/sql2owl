@@ -1,6 +1,6 @@
 EXEC = sql2owl
 
-$(EXEC): owl.cmi owl.cmo sql.cmi parser.cmi string2.cmo sql2owl.cmi sql2owl.cmo parser.cmo lexer.cmo data.cmi data.cmo main.cmo
+$(EXEC): sql.cmo owl.cmo string2.cmo sql2owl.cmo parser.cmo lexer.cmo data.cmo main.cmo
 	ocamlc -o $@ owl.cmo string2.cmo str.cma sql2owl.cmo parser.cmo lexer.cmo data.cmo main.cmo
 
 %.cmi: %.mli
