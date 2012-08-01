@@ -1,3 +1,6 @@
+open Types
+open Transform
+open Parser
 let _ = 
   let input_filename = ref "" in
   let output_filename = ref "" in
@@ -21,7 +24,7 @@ let _ =
     let output_file = open_out !output_filename in
     let lexbuf = Lexing.from_channel input_file in
     let sql_tables = Parser.start Lexer.token lexbuf in
-    let owl_tables = List.map Sql2owl.owl_of_sql_table sql_tables in
+    let owl_tables = List.map owl_of_sql_table sql_tables in
     let header = "<?xml version=\"1.0\"?>
 <!DOCTYPE rdf:RDF [
     <!ENTITY "^ !base ^" \"" ^ !path  ^ "#\" >
@@ -40,21 +43,21 @@ let _ =
     xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"
     xmlns:"^ !base ^"=\"" ^ !path  ^ "#\"
     >
-m  
+
   <owl:Ontology rdf:about=\"\">
     <rdfs:comment xml:lang=\"en\"></rdfs:comment>
     <rdfs:label xml:lang=\"en\"></rdfs:label> 
   </owl:Ontology>
 " 
     in
-    let footer = "</rdf:RDF>" in
+    let footer = "</rdf:RDF>\n" in
     let model = 
       List.fold_left 
 	(fun a (clazz, properties) ->
-	   a ^ (Owl.string_of_owl_class clazz) ^ 
+	   a ^ (string_of_owl_class clazz) ^ 
 	     (List.fold_left 
 		(fun a b ->
-		   a ^ (Owl.string_of_owl_property b))
+		   a ^ (string_of_owl_property b))
 		""
 		properties)
 	     (*(List.fold_left
@@ -68,5 +71,8 @@ m
     in
       output_string output_file header ;
       output_string output_file model ;
-      Data.output_data output_file sql_tables ;
+      (* Data.output_data output_file sql_tables ; *)
+      List.iter 
+	(fun d -> output_string output_file (string_of_owl_data_instance d)) 
+	(Data.transform sql_tables);
       output_string output_file footer

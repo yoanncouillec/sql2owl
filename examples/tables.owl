@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE rdf:RDF [
+    <!ENTITY base "http://none.com#" >
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+<rdf:RDF 
+    xmlns="http://none.com#"
+    xml:base="http://none.com"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:base="http://none.com#"
+    >
+
+  <owl:Ontology rdf:about="">
+    <rdfs:comment xml:lang="en"></rdfs:comment>
+    <rdfs:label xml:lang="en"></rdfs:label> 
+  </owl:Ontology>
+<owl:Class rdf:about="#PERSON" />
+<owl:DatatypeProperty rdf:about="#PERSON__ID"><rdfs:domain rdf:resource="#PERSON" /><rdfs:range rdf:resource="int" /></owl:DatatypeProperty>
+<owl:DatatypeProperty rdf:about="#PERSON__FIRSTNAME"><rdfs:domain rdf:resource="#PERSON" /><rdfs:range rdf:resource="string" /></owl:DatatypeProperty>
+<owl:DatatypeProperty rdf:about="#PERSON__LASTNAME"><rdfs:domain rdf:resource="#PERSON" /><rdfs:range rdf:resource="string" /></owl:DatatypeProperty>
+<owl:DatatypeProperty rdf:about="#PERSON__BIRTHYEAR"><rdfs:domain rdf:resource="#PERSON" /><rdfs:range rdf:resource="int" /></owl:DatatypeProperty>
+<PERSON rdf:about="#PERSON__003">
+<PERSON__ID>003</PERSON__ID>
+<PERSON__FIRSTNAME>samantha</PERSON__FIRSTNAME>
+<PERSON__LASTNAME>couillec</PERSON__LASTNAME>
+<PERSON__BIRTHYEAR>1991</PERSON__BIRTHYEAR>
+</PERSON>
+<PERSON rdf:about="#PERSON__002">
+<PERSON__ID>002</PERSON__ID>
+<PERSON__FIRSTNAME>axel</PERSON__FIRSTNAME>
+<PERSON__LASTNAME>couillec</PERSON__LASTNAME>
+<PERSON__BIRTHYEAR>1993</PERSON__BIRTHYEAR>
+</PERSON>
+<PERSON rdf:about="#PERSON__001">
+<PERSON__ID>001</PERSON__ID>
+<PERSON__FIRSTNAME>yoann</PERSON__FIRSTNAME>
+<PERSON__LASTNAME>couillec</PERSON__LASTNAME>
+<PERSON__BIRTHYEAR>1983</PERSON__BIRTHYEAR>
+</PERSON>
+</rdf:RDF>

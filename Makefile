@@ -1,7 +1,7 @@
-EXEC = sql2owl
+EXEC = main
 
-$(EXEC): sql.cmo owl.cmo string2.cmo sql2owl.cmo parser.cmo lexer.cmo data.cmo main.cmo
-	ocamlc -o $@ owl.cmo string2.cmo str.cma sql2owl.cmo parser.cmo lexer.cmo data.cmo main.cmo
+$(EXEC): types.cmo transform.cmo parser.cmo parser.cmi lexer.cmo data.cmo main.cmo
+	ocamlc -o $@ string2.cma str.cma types.cmo transform.cmo parser.cmo lexer.cmo data.cmo main.cmo
 
 %.cmi: %.mli
 	ocamlc $^
@@ -9,10 +9,14 @@ $(EXEC): sql.cmo owl.cmo string2.cmo sql2owl.cmo parser.cmo lexer.cmo data.cmo m
 %.cmo: %.ml
 	ocamlc $^ -c
 
-%.cmi: %.mly
-	ocamlyacc $^
+data.cmo: data.cmi data.ml
+	ocamlc data.ml -c
 
-%.cmo: %.mll
+parser.ml: parser.mly
+	ocamlyacc $^
+	ocamlc $@i
+
+lexer.ml: lexer.mll
 	ocamllex $^
 
 test: $(EXEC)
@@ -37,7 +41,7 @@ test: $(EXEC)
 #	./$^ -i ../Data/subject.sql
 #	./$^ -i ../Data/subject_rels.sql
 #	./$^ -i ../Data/term.sql
-	./$^ -i ../Data/ulan.sql
+	./$^ -i examples/tables.sql
 
 clean:
-	rm -rf *.cm* $(EXEC) *~ \#*\# *.owl 
+	rm -rf *.cm* $(EXEC) *~ \#*\# *.owl parser.ml lexer.ml parser.mli

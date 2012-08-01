@@ -1,0 +1,6 @@
+CREATE TABLE PERSON (
+ID number(3) PRIMARY KEY,
+FIRSTNAME char(32),
+LASTNAME char(32),
+BIRTHYEAR number(4)
+)

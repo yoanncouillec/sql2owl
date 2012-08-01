@@ -1,39 +1,20 @@
-type owl_data_property =
-  | DataObjectProperty of string * string
-  | DataDatatypeProperty of string * string
-
-type owl_data_instance = 
-  | DataInstance of string * string * owl_data_property list
-
-let string_of_owl_data_property = function
-  | DataObjectProperty (tag, data) ->
-      "<" ^ tag ^ " rdf:resource=\"#" ^ data ^ "\" />\n"
-  | DataDatatypeProperty (tag, data) ->
-      "<" ^ tag ^ ">" ^ data ^ "</" ^ tag ^ ">\n" 
-
-let string_of_owl_data_instance = function
-  | DataInstance (tag, about, properties) ->
-      "<" ^ tag ^ " rdf:about=\"#" ^ about ^ "\">\n" ^
-	(List.fold_left 
-	   (fun a b -> a ^ (string_of_owl_data_property b)) 
-	   "" 
-	   properties) ^
-	"</" ^ tag ^ ">\n"
-
+open Types
+open Transform
+      
 let rec has_primary_key = function
   | [] -> false
-  | Sql.PrimaryKey :: _ -> true
+  | PrimaryKey :: _ -> true
   | _ :: rest -> has_primary_key rest
 
 let rec has_references = function
   | [] -> false
-  | Sql.References (_, _) :: _ -> true
+  | References (_, _) :: _ -> true
   | _ :: rest -> has_references rest
 
 let id_from_fields =
   let rec id_from_fields l n = function
     | [] -> l
-    | Sql.Field (_, _, foptions) :: rest ->
+    | Field (_, _, foptions) :: rest ->
 	if has_primary_key foptions 
 	then [n]
 	else if has_references foptions 
@@ -44,14 +25,14 @@ let id_from_fields =
       
 let rec get_references = function
   | [] -> failwith "No references"
-  | Sql.References (_,_) as r :: _-> r
+  | References (_,_) as r :: _-> r
   | _ :: rest -> get_references rest
 
 let owl_data_property_of_sql_field tablename = function
-    (Sql.Field (fieldname, _, foptions), data) ->
+    (Field (fieldname, _, foptions), data) ->
       if has_references foptions then
 	match get_references foptions with
-	  | Sql.References (rtable, _) ->
+	  | References (rtable, _) ->
 	      DataObjectProperty (tablename ^ "__" ^ fieldname,
 				     rtable ^ "__" ^ data)
 	  | _ -> failwith "Sould not happenned"
@@ -59,8 +40,37 @@ let owl_data_property_of_sql_field tablename = function
 	DataDatatypeProperty (tablename ^ "__" ^ fieldname,
 				 String2.html_entities data)
 
-let output_data_table output_channel step = function
-  | Sql.Table (tablename, fields) ->
+let transform l = 
+  let transform accu = function
+    | Table (tablename, fields) ->
+	let id = id_from_fields fields in 
+	let chan = open_in ("examples/" ^ tablename ^ ".raw") in
+	let lines = ref [] in
+	let owl_data_from_line line =
+	  let line = Str.split_delim (Str.regexp "[\t]") line in
+	    DataInstance (tablename,
+			  List.fold_left 
+			    (fun s n -> s ^ (List.nth line n))
+			    (tablename ^ "__")
+			    id,
+			  List.map 
+			    (owl_data_property_of_sql_field tablename) 
+			    (List.combine fields line))
+	in
+	  try
+	    while true 
+	    do
+	      lines := owl_data_from_line (input_line chan) :: !lines ;
+	    done ;
+	    accu @ !lines
+	  with End_of_file ->
+	    accu @ !lines
+  in
+    List.fold_left transform [] l
+
+(*
+  let output_data_table output_channel step = function
+  | Table (tablename, fields) ->
       let count = ref 0 in
       let id = id_from_fields fields in 
       let chan = open_in ("../Data/" ^ tablename ^ ".out") in
@@ -95,3 +105,4 @@ let output_data_table output_channel step = function
 
 let output_data out_channel sql_tables =
   List.iter (output_data_table out_channel 100) sql_tables
+*)
